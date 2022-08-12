@@ -42,7 +42,7 @@ class AverageExpectedValuesSerializer:
         print(self.expected_spots)
         print(self.expected_winrate)
 
-# maike parameter for overall_info able to accept more than one data type
+# make parameter for overall_info able to accept more than one data type
 def calculateOverallWn8(overall_info, avgDamage, avgDef, avgFrag, avgSpots, winrate):
     
     expected_values = AverageExpectedValuesSerializer(overall_info)
