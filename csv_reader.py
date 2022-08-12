@@ -1,5 +1,7 @@
 import csv
 
+# not used for now, using tankopedia json file instead
+
 exp_values = {}
 
 # header is 'tank_id', 'dmg', 'frg', 'spo', 'def', 'win', 'battles', 'type', 'tier', 'tag'
