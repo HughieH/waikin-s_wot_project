@@ -56,7 +56,7 @@ class Player:
         self.allTankWN8 = []
         self.skippedTankID = []
         self.tankWN8()
-        self.overallWn8 = self.overallWN8()
+        self.overallAccountWn8 = self.overallWN8()
         
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
     # calculate wn8 for each individual tank
@@ -132,27 +132,24 @@ class Player:
 
 
     def print(self):
+        print("-------------------------------------------------")
         print(self.username)
         print(self.playerServer)
         print("User ID is: " + str(self.userID))
-        #print("WG rating is: " + str(self.wgRating))
+        print("WG rating is: " + str(self.wgRating))
         print("Total battles is: " + str(self.totalBattles))
-        #print("Overall win rate is " + str(self.winRate))
-        #print("Overall dpg is " + str(self.dpg))
+        print("Overall win rate is " + str(self.winRate))
+        print("Overall dpg is " + str(self.dpg))
         #print("Number of tanks is: " + str(self.numberOfTanks))
-        #print("Number tanks:")
-        #print(len(self.allTankStats))
-        print("Overall wn8 is: " + str(self.overallWN8()))
+
+        print("Overall wn8 is: " + str(self.overallAccountWn8))
         print("-------------------------------------------------")
         print("Sorted list of Tanks: ")
+        print("-------------------------------------------------")
         for i in self.sortedListOfTanks():
             print(i)
         print("-------------------------------------------------")
-        print("-------------------------------------------------")
-        print("Unsorted list of Tanks: ")
-        for i in self.allTankWN8:
-            print(i)
-        print("-------------------------------------------------")
+
 
 
 
