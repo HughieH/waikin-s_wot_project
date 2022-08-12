@@ -71,6 +71,7 @@ class Player:
                 pass
             else:
                 try:
+
                     # Calculate wn8, parameters are (id, avgDamage, avgDef, avgFrag, avgSpots, winrate)
                     wn8 = expectedValueWN8.calculateWn8(i["tank_id"], (randBattleStats["damage_dealt"]/randBattleStats["battles"]), (randBattleStats["dropped_capture_points"]/randBattleStats["battles"])\
                     , (randBattleStats["frags"]/randBattleStats["battles"]), (randBattleStats["spotted"]/randBattleStats["battles"]), ((randBattleStats["wins"]/randBattleStats["battles"]) * 100))
@@ -78,13 +79,24 @@ class Player:
                     tank_stat = {"Tank ID": i["tank_id"], "Tank WN8": wn8, "Tank Battles": randBattleStats["battles"],\
                      "Tank Name": self.allTankopediaData[str(i["tank_id"])]["name"], "Tier": self.allTankopediaData[str(i["tank_id"])]["tier"]}
                     self.allTankWN8.append(tank_stat)
-                    #print(tank_stat)
-                    #print(len(self.allTankWN8))
+                    print(tank_stat)
+                    print(len(self.allTankWN8))
                 # in the event that tank_id from WG API cannot be found in JSON file list, tank is skipped
                 except AttributeError:
                     self.skippedTankID.append(i["tank_id"])
                     print(str(i["tank_id"]) + " was skipped!")
                     pass
+                # some tank_id's from xvm JSON cant seem to be found in tankopedia request, but can found in overall player stats
+                except KeyError:
+                    print("key error")
+                    # Calculate wn8, parameters are (id, avgDamage, avgDef, avgFrag, avgSpots, winrate)
+                    wn8 = expectedValueWN8.calculateWn8(i["tank_id"], (randBattleStats["damage_dealt"]/randBattleStats["battles"]), (randBattleStats["dropped_capture_points"]/randBattleStats["battles"])\
+                    , (randBattleStats["frags"]/randBattleStats["battles"]), (randBattleStats["spotted"]/randBattleStats["battles"]), ((randBattleStats["wins"]/randBattleStats["battles"]) * 100))
+                    
+                    tank_stat = {"Tank ID": i["tank_id"], "Tank WN8": wn8, "Tank Battles": randBattleStats["battles"]}
+                    self.allTankWN8.append(tank_stat)
+                    print(tank_stat)
+                    print(len(self.allTankWN8))
                     
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
@@ -131,7 +143,9 @@ class Player:
 
         return sorted(self.allTankWN8, key = itemgetter("Tank Battles"), reverse = True)
 
+    def overallStats(self):
 
+        pass
 
 
     def print(self):
@@ -157,5 +171,5 @@ class Player:
 
 
 
-test = Player("na", "waikin_reppinKL")
+test = Player("eu", "quickfingers")
 test.print()
