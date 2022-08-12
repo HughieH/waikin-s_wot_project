@@ -1,6 +1,7 @@
 import requests
 import expectedValueWN8
 import averageExpectedOverallValueWN8
+import csv_reader
 from operator import itemgetter
 
 
@@ -73,7 +74,8 @@ class Player:
                     wn8 = expectedValueWN8.calculateWn8(i["tank_id"], (randBattleStats["damage_dealt"]/randBattleStats["battles"]), (randBattleStats["dropped_capture_points"]/randBattleStats["battles"])\
                     , (randBattleStats["frags"]/randBattleStats["battles"]), (randBattleStats["spotted"]/randBattleStats["battles"]), ((randBattleStats["wins"]/randBattleStats["battles"]) * 100))
                     
-                    tank_stat = {"Tank ID": i["tank_id"], "Tank WN8": wn8, "Tank Battles": randBattleStats["battles"]}
+                    tank_stat = {"Tank ID": i["tank_id"], "Tank WN8": wn8, "Tank Battles": randBattleStats["battles"],\
+                     "Tank Name": csv_reader.exp_values[str(i["tank_id"])][9], "Tier": csv_reader.exp_values[str(i["tank_id"])][8]}
                     self.allTankWN8.append(tank_stat)
                     #print(tank_stat)
                     #print(len(self.allTankWN8))
