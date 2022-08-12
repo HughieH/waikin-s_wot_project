@@ -171,5 +171,5 @@ class Player:
 
 
 
-test = Player("eu", "quickfingers")
-test.print()
+#test = Player("eu", "quickfingers")
+#test.print()
