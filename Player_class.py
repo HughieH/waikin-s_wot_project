@@ -15,10 +15,10 @@ class Player:
         #API error handling??
         
         if self.playerServer == "na":
-            player_info = ((requests.get("https://api.worldoftanks.com/wot/account/list/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&search=" + self.username)).json())\
+            player_info = ((requests.get("https://api.worldoftanks.com/wot/account/list/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&search=" + self.username, timeout = 3)).json())\
             ["data"][0] # DICT value keys for userID
-        else: 
-            player_info = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/account/list/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&search=" + self.username)).json())\
+        else:
+            player_info = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/account/list/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&search=" + self.username, timeout = 3)).json())\
             ["data"][0]
         
         self.userID = player_info["account_id"]
@@ -26,10 +26,10 @@ class Player:
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
         # overall stats
         if self.playerServer == "na":
-            overall_info = ((requests.get("https://api.worldoftanks.com/wot/account/info/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID))).json())\
+            overall_info = ((requests.get("https://api.worldoftanks.com/wot/account/info/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID), timeout=3)).json())\
             ["data"][str(self.userID)] # DICT value keys for overall player info
         else: 
-            overall_info = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/account/info/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID))).json())\
+            overall_info = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/account/info/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID), timeout=3)).json())\
             ["data"][str(self.userID)]
 
         self.wgRating = overall_info["global_rating"]
@@ -45,12 +45,12 @@ class Player:
             # lists of all the tanks a player has nested in a dictionary
             self.allTankStats = ((requests.get("https://api.worldoftanks.com/wot/tanks/stats/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID) +\
                 "&fields=-in_garage%2C+-frags%2C+-max_frags%2C+-team%2C+-stronghold_defense%2C+-globalmap%2C+-clan%2C+-stronghold_skirmish%2C+-company%2C+-regular_team%2C+-account_id%2C+-max_xp"\
-                )).json())["data"][str(self.userID)] # dictionaries nested in list
+                , timeout=3)).json())["data"][str(self.userID)] # dictionaries nested in list
         
         else:
             self.allTankStats = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/tanks/stats/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID) +\
                 "&fields=-in_garage%2C+-frags%2C+-max_frags%2C+-team%2C+-stronghold_defense%2C+-globalmap%2C+-clan%2C+-stronghold_skirmish%2C+-company%2C+-regular_team%2C+-account_id%2C+-max_xp"\
-                )).json())["data"][str(self.userID)] 
+                , timeout=3)).json())["data"][str(self.userID)] 
 
         # number of tanks a player has ACCORDING to the WOT API, may not be the same once cross-referenced with the XVM expected values JSON file
         self.numberOfTanks = len(self.allTankStats)
@@ -58,7 +58,7 @@ class Player:
         self.allTankWN8 = []
         self.skippedTankID = []
         self.tankWN8()
-        self.overallAccountWn8 = self.overallWN8()
+        self.overallAccountWn8 = int(self.overallWN8())
         
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
     # calculate wn8 for each individual tank
@@ -76,27 +76,27 @@ class Player:
                     wn8 = expectedValueWN8.calculateWn8(i["tank_id"], (randBattleStats["damage_dealt"]/randBattleStats["battles"]), (randBattleStats["dropped_capture_points"]/randBattleStats["battles"])\
                     , (randBattleStats["frags"]/randBattleStats["battles"]), (randBattleStats["spotted"]/randBattleStats["battles"]), ((randBattleStats["wins"]/randBattleStats["battles"]) * 100))
                     
-                    tank_stat = {"Tank ID": i["tank_id"], "Tank WN8": wn8, "Tank Battles": randBattleStats["battles"],\
+                    tank_stat = {"Tank ID": i["tank_id"], "Tank WN8": int(wn8), "Tank Battles": randBattleStats["battles"],\
                      "Tank Name": self.allTankopediaData[str(i["tank_id"])]["name"], "Tier": self.allTankopediaData[str(i["tank_id"])]["tier"]}
                     self.allTankWN8.append(tank_stat)
-                    print(tank_stat)
-                    print(len(self.allTankWN8))
+                    #print(tank_stat)
+                    #print(len(self.allTankWN8))
                 # in the event that tank_id from WG API cannot be found in JSON file list, tank is skipped
                 except AttributeError:
                     self.skippedTankID.append(i["tank_id"])
-                    print(str(i["tank_id"]) + " was skipped!")
+                    #print(str(i["tank_id"]) + " was skipped!")
                     pass
                 # some tank_id's from xvm JSON cant seem to be found in tankopedia request, but can found in overall player stats
                 except KeyError:
-                    print("key error")
+                    #print("key error")
                     # Calculate wn8, parameters are (id, avgDamage, avgDef, avgFrag, avgSpots, winrate)
                     wn8 = expectedValueWN8.calculateWn8(i["tank_id"], (randBattleStats["damage_dealt"]/randBattleStats["battles"]), (randBattleStats["dropped_capture_points"]/randBattleStats["battles"])\
                     , (randBattleStats["frags"]/randBattleStats["battles"]), (randBattleStats["spotted"]/randBattleStats["battles"]), ((randBattleStats["wins"]/randBattleStats["battles"]) * 100))
                     
-                    tank_stat = {"Tank ID": i["tank_id"], "Tank WN8": wn8, "Tank Battles": randBattleStats["battles"]}
+                    tank_stat = {"Tank ID": i["tank_id"], "Tank WN8": int(wn8), "Tank Battles": randBattleStats["battles"]}
                     self.allTankWN8.append(tank_stat)
-                    print(tank_stat)
-                    print(len(self.allTankWN8))
+                    #print(tank_stat)
+                    #print(len(self.allTankWN8))
                     
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
@@ -143,11 +143,23 @@ class Player:
 
         return sorted(self.allTankWN8, key = itemgetter("Tank Battles"), reverse = True)
 
-    def overallStats(self):
+#---------------------------------------------------------------------------------------------------------------------------------------------------------   
+    # returns overall account stats in a newline format
+    def overallAccountStats(self):
 
-        pass
+        return "Username: " + self.username + "\nPlayer server: " + self.playerServer + "\nOverall winrate: " + str(self.winRate)\
+        + "\nOverall wn8: " + str(self.overallAccountWn8) + "\nWG rating: " + str(self.wgRating)
 
+    def accountTankStats(self):
 
+        print("-------------------------------------------------")
+        print("Sorted list of Tanks: ")
+        print("-------------------------------------------------")
+        for i in self.sortedListOfTanks():
+            print(i)
+        print("-------------------------------------------------")
+
+    
     def print(self):
         print("-------------------------------------------------")
         print(self.username)
@@ -157,8 +169,7 @@ class Player:
         print("Total battles is: " + str(self.totalBattles))
         print("Overall win rate is " + str(self.winRate))
         print("Overall dpg is " + str(self.dpg))
-        #print("Number of tanks is: " + str(self.numberOfTanks))
-
+        print("Number of tanks is: " + str(self.numberOfTanks))
         print("Overall wn8 is: " + str(self.overallAccountWn8))
         print("-------------------------------------------------")
         print("Sorted list of Tanks: ")
@@ -172,4 +183,5 @@ class Player:
 
 
 #test = Player("eu", "quickfingers")
-#test.print()
+#print(test.overallAccountStats())
+#test.accountTankStats()
