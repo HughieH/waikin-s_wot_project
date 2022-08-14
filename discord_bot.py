@@ -23,21 +23,24 @@ async def on_message(message):
         print(stats)
         if len(stats) == 3:
             player = Player_class.Player(stats[1], stats[2])
-            overall_wn8 = player.overallAccountStats()
+            overall_wn8 = player.overallDiscordAccountStats()
             await message.channel.send(overall_wn8)
             print("Success!!")
-
         else:
-            await message.channel.send("Wrong format")
+            await message.channel.send("Wrong format, please use the format !player server username. For example '!player na waikin_reppinKL'.")
     
     # example !compare waikin_reppinKL na quickfingers eu
     # Comparison("waikin_reppinKL", "na", "quickfingers", "eu")
     if message.content.startswith("!compare"):
         input = message.content.split(" ")
+        print(input)
         if len(input) == 5:
             comparison = (Comparison_class.Comparison(input[1], input[2], input[3], input[4])).compareOverallStats()
-            await message.channel.send(comparison)
+            await message.channel.send(f"**__Comparison of Overall Stats:__**\n{comparison}")
             print("Success!!")
+        else:
+            await message.channel.send("Wrong format, please use the format !compare name1 server1 name2 server2.\
+             For example '!compare waikin_reppinKL na quickfingers eu'.")
 
 sys.path.insert(0, '/Users/wanho/Desktop')
 import Discord_bot_API_keys

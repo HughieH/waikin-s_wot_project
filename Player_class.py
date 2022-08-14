@@ -3,6 +3,7 @@ import json
 import expectedValueWN8
 import averageExpectedOverallValueWN8
 from operator import itemgetter
+import Color_icon_class
 
 class Player:
 
@@ -59,7 +60,8 @@ class Player:
         self.skippedTankID = []
         self.tankWN8()
         self.overallAccountWn8 = int(self.overallWN8())
-        
+        self.colorIcon = Color_icon_class.ColorIcon(self.overallAccountWn8, self.playerServer)
+
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
     # calculate wn8 for each individual tank
     def tankWN8(self):
@@ -145,10 +147,10 @@ class Player:
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
     # returns overall account stats in a newline format
-    def overallAccountStats(self):
+    def overallDiscordAccountStats(self):
 
-        return "Username: " + self.username + "\nPlayer server: " + self.playerServer + "\nOverall winrate: " + str(self.winRate)\
-        + "\nOverall wn8: " + str(self.overallAccountWn8) + "\nWG rating: " + str(self.wgRating)
+        return (f"> **Username:** {self.username} \n> **Player server:** {self.playerServer} {self.colorIcon.serverIcon()} \n> **Overall winrate:** {str(self.winRate)}"
+        f"\n> **Overall wn8:** {str(self.overallAccountWn8)} \n> **WG rating:** {str(self.wgRating)}")
 
     def accountTankStats(self):
 
