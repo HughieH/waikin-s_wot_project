@@ -41,6 +41,9 @@ class Player:
         self.dpg = round(self.overallStats["damage_dealt"] / self.totalBattles)
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
+        
+    def fetchStats(self):
+        
         # getting tank-specific stats from WG API
         if self.playerServer == "na":
             # lists of all the tanks a player has nested in a dictionary
@@ -54,13 +57,22 @@ class Player:
                 , timeout=3)).json())["data"][str(self.userID)] 
 
         # number of tanks a player has ACCORDING to the WOT API, may not be the same once cross-referenced with the XVM expected values JSON file
+        
+        #print(type(self.allTankStats))
+        #print(self.allTankStats)
+
         self.numberOfTanks = len(self.allTankStats)
         # list of all tank wn8 values, list is empty in constructor but gets filled when the tankWN8 method is called
         self.allTankWN8 = []
         self.skippedTankID = []
-        self.tankWN8()
-        self.overallAccountWn8 = int(self.overallWN8())
-        self.colorIcon = Color_icon_class.ColorIcon(self.overallAccountWn8, self.winRate, self.wgRating, self.playerServer)
+        #self.tankWN8()
+        #self.overallAccountWn8 = int(self.overallWN8())
+        #self.colorIcon = Color_icon_class.ColorIcon(self.overallAccountWn8, self.winRate, self.wgRating, self.playerServer)
+
+        self.allTankBattles = {tank["tank_id"]: tank["all"]["battles"] for tank in self.allTankStats} # format is tank_id: tank battles
+        #print(len(self.allTankBattles))
+        #print(self.allTankBattles)
+                
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
     # calculate wn8 for each individual tank
@@ -80,14 +92,17 @@ class Player:
                     
                     tank_stat = {"Tank ID": i["tank_id"], "Tank WN8": int(wn8), "Tank Battles": randBattleStats["battles"],\
                      "Tank Name": self.allTankopediaData[str(i["tank_id"])]["name"], "Tier": self.allTankopediaData[str(i["tank_id"])]["tier"]}
+                    
                     self.allTankWN8.append(tank_stat)
                     #print(tank_stat)
                     #print(len(self.allTankWN8))
+                
                 # in the event that tank_id from WG API cannot be found in JSON file list, tank is skipped
                 except AttributeError:
                     self.skippedTankID.append(i["tank_id"])
                     #print(str(i["tank_id"]) + " was skipped!")
-                    pass
+                
+                
                 # some tank_id's from xvm JSON cant seem to be found in tankopedia request, but can found in overall player stats
                 except KeyError:
                     #print("key error")
@@ -172,7 +187,7 @@ class Player:
         print("Total battles is: " + str(self.totalBattles))
         print("Overall win rate is " + str(self.winRate))
         print("Overall dpg is " + str(self.dpg))
-        print("Number of tanks is: " + str(self.numberOfTanks))
+
         print("Overall wn8 is: " + str(self.overallAccountWn8))
         print("-------------------------------------------------")
         print("Sorted list of Tanks: ")
@@ -185,6 +200,6 @@ class Player:
 
 
 
-#test = Player("eu", "quickfingers")
-#print(test.overallAccountStats())
-#test.accountTankStats()
+test = Player("na", "waikin_reppinKL")
+test.fetchStats()
+#print(test.print())
