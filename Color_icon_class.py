@@ -1,5 +1,3 @@
-
-
 class ColorIcon:
 
     def __init__(self, player_wn8, player_wr, player_wg_rating, player_server):
@@ -12,7 +10,7 @@ class ColorIcon:
     def colorWN8(self):
 
         if self.wn8 >= 4000:
-            return "‼🟣‼"
+            return "🟪"
         elif (self.wn8 >= 3000) and (self.wn8 < 4000):
             return "🟣"
         elif (self.wn8 >= 2000) and (self.wn8 < 3000):
@@ -29,20 +27,36 @@ class ColorIcon:
     def colorWR(self):
         
         if self.wr >= 65:
-            return "‼🟣‼"
+            return "🟪"
         elif (self.wr >= 58) and (self.wr < 65):
             return "🟣"
-        elif (self.wr >= 58) and (self.wr < 65):
+        elif (self.wr >= 55) and (self.wr < 58):
             return "🔵"
-        elif (self.wr >= 58) and (self.wr < 65):
+        elif (self.wr >= 51) and (self.wr < 55):
             return "🟢"
-        elif (self.wr >= 58) and (self.wr < 65):
+        elif (self.wr >= 48) and (self.wr < 51):
             return "🟡"
-        elif (self.wr >= 58) and (self.wr < 65):
+        elif (self.wr >= 46) and (self.wr < 48):
             return "🟠"
-        elif (self.wr >= 58) and (self.wr < 65):
+        elif (self.wr < 46):
             return "🍅"
 
+    def colorWGRating(self):
+        if self.wgRating >= 11000:
+            return "🟪"
+        elif (self.wgRating >= 9000) and (self.wgRating < 11000):
+            return "🟣"
+        elif (self.wgRating >= 7000) and (self.wgRating < 9000):
+            return "🔵"
+        elif (self.wgRating >= 5000) and (self.wgRating < 7000):
+            return "🟢"
+        elif (self.wgRating >= 3000) and (self.wgRating < 5000):
+            return "🟡"
+        elif (self.wgRating >= 2000) and (self.wgRating < 3000):
+            return "🟠"
+        elif (self.wgRating < 2000):
+            return "🍅"
+    
     def serverIcon(self):
 
         if self.server == "na":

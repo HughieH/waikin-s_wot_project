@@ -60,7 +60,7 @@ class Player:
         self.skippedTankID = []
         self.tankWN8()
         self.overallAccountWn8 = int(self.overallWN8())
-        self.colorIcon = Color_icon_class.ColorIcon(self.overallAccountWn8, self.playerServer)
+        self.colorIcon = Color_icon_class.ColorIcon(self.overallAccountWn8, self.winRate, self.wgRating, self.playerServer)
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
     # calculate wn8 for each individual tank
@@ -149,8 +149,9 @@ class Player:
     # returns overall account stats in a newline format
     def overallDiscordAccountStats(self):
 
-        return (f"> **Username:** {self.username} \n> **Player server:** {self.playerServer} {self.colorIcon.serverIcon()} \n> **Overall winrate:** {str(self.winRate)}"
-        f"\n> **Overall wn8:** {str(self.overallAccountWn8)} \n> **WG rating:** {str(self.wgRating)}")
+        return (f"> **Username:** {self.username} \n> **Player server:** {str(self.playerServer)} {self.colorIcon.serverIcon()} \n> **Overall winrate:** {str(self.winRate)} {self.colorIcon.colorWN8()}"
+        f"\n> **Overall wn8:** {str(self.overallAccountWn8)} {self.colorIcon.colorWN8()} \n> **WG rating:** {str(self.wgRating)} {self.colorIcon.colorWGRating()}")
+
 
     def accountTankStats(self):
 
