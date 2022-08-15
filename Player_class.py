@@ -69,10 +69,13 @@ class Player:
         #self.overallAccountWn8 = int(self.overallWN8())
         #self.colorIcon = Color_icon_class.ColorIcon(self.overallAccountWn8, self.winRate, self.wgRating, self.playerServer)
 
-        self.allTankBattles = {tank["tank_id"]: tank["all"]["battles"] for tank in self.allTankStats} # format is tank_id: tank battles
+        self.allTankBattles = {tank["tank_id"]: tank["all"] for tank in self.allTankStats} # format is tank_id: {"all" tank stats}
         #print(len(self.allTankBattles))
         #print(self.allTankBattles)
-                
+    
+    # returns a dictionary of overall stats for a specific tank at that instant of time
+    def individualTank(self, tank_id):
+        return self.allTankBattles[tank_id]
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
     # calculate wn8 for each individual tank
