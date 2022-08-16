@@ -1,6 +1,9 @@
-A = {'a':5, 't':4, 'd':2}
+from turtle import update
+
+
+A = {'b': 10000}
 B = {'s':11, 'a':4, 'd': 0}
 
-C = {x: A[x] - B[x] for x in A if x in B}
+A.update(B)
 
-print(C)
+print(A)

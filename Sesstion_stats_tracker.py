@@ -4,7 +4,7 @@ import datetime
 import time
 import expectedValueWN8
 
-def diffInBattles(player_before, player_after):
+def diffInBattles(player_before: Player_class.Player, player_after: Player_class.Player):
     
     tank_id = False
     
