@@ -1,6 +1,8 @@
+from dotenv import load_dotenv
 import os
 from twitchio.ext import commands
 
+load_dotenv() # load enviroment variables
 
 class Bot(commands.Bot):
 
@@ -8,7 +10,7 @@ class Bot(commands.Bot):
         # Initialise our Bot with our access token, prefix and a list of channels to join on boot...
         # prefix can be a callable, which returns a list of strings or a string...
         # initial_channels can also be a callable which returns a list of strings...
-        super().__init__(token='oauth:jyau8stg0tsob28l8othpdhtusgxkz', prefix='!', initial_channels=['Waikin_'])
+        super().__init__(token = os.getenv("TMI_TOKEN"), prefix='!', initial_channels=['Waikin_'])
 
     async def event_ready(self):
         # Notify us when everything is ready!
