@@ -1,10 +1,16 @@
 from twitchio.ext import routines
 
 
+@routines.routine(hours=1)
+async def hello():
+    print('Hello World!')
 
-@routines.routine(seconds=5.0, iterations=5)
-async def hello(arg: str):
-    print("hehehehehee")
-    print(f'Hello {arg}!')
+@hello.before_routine
+async def hello_before():
+    print('I am run first!')
 
-hello.start('World')
+
+hello.start()
+print("hello")
+print(type(hello.start()
+))
