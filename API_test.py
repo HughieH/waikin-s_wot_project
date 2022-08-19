@@ -1,16 +1,18 @@
 from twitchio.ext import routines
+import asyncio
 
 
-@routines.routine(hours=1)
-async def hello():
-    print('Hello World!')
+@routines.routine(seconds=5.0, iterations=5)
+async def hello(arg: str):
+    print(f'Hello {arg}!')
 
-@hello.before_routine
-async def hello_before():
-    print('I am run first!')
+loop = asyncio.get_event_loop()
+try:
+    asyncio.ensure_future(hello.start("gamer"))
+    loop.run_forever()
+except KeyboardInterrupt:
+    pass
+finally:
+    print("Closing Loop")
+    loop.close()
 
-
-hello.start()
-print("hello")
-print(type(hello.start()
-))

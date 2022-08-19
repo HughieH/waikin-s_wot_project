@@ -40,7 +40,7 @@ class SessionStatsTracker:
 
         self.sessionStats.update(battleStats)
         
-        return f"{result}\nDamge: {diffInStats['damage_dealt']}\nWN8: {wn8}\nKills: {diffInStats['frags']}\nExp: {diffInStats['xp']}\n"
+        return f"{result}\nDamge: {diffInStats['damage_dealt']}\nWN8: {round(wn8, 2)}\nKills: {diffInStats['frags']}\nExp: {diffInStats['xp']}\n"
     
     def startSessionTracking(self):
 
