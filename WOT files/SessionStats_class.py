@@ -34,7 +34,7 @@ class SessionStatsTracker:
             result = "BATTLE LOST"
         
         time = datetime.datetime.now()
-        battleStats = {time.strftime("%c"): {"Tank_ID": tank_id, "Damage": diffInStats['damage_dealt'], "WN8": wn8, "Kills": diffInStats['frags'],
+        battleStats = {time.strftime("%c"): {"Tank_ID": tank_id, "Damage": diffInStats['damage_dealt'], "WN8": round(wn8, 2), "Kills": diffInStats['frags'],
             "Exp": diffInStats['xp']}}
         
 
@@ -63,7 +63,6 @@ class SessionStatsTracker:
                     tank_now = player_now.individualTank(tank_id)
                     print(self.battleStats(tank_id, inital_tank, tank_now))
                     
-                    
                     # last-battle updated stats, this keeps the session specific to new battles
                     initial_player = player_now
 
@@ -75,5 +74,5 @@ class SessionStatsTracker:
             print('Session Ended')
             print(self.sessionStats)
 
-test = SessionStatsTracker("na", "waikin_reppinKL")
-test.startSessionTracking()
+#test = SessionStatsTracker("na", "waikin_reppinKL")
+#test.startSessionTracking()

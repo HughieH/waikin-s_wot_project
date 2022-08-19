@@ -203,6 +203,6 @@ class Player:
 
 
 
-test = Player("na", "waikin_reppinKL")
-test.fetchStats()
+#test = Player("na", "waikin_reppinKL")
+#test.fetchStats()
 #print(test.print())
