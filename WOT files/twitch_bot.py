@@ -6,7 +6,6 @@ from twitchio.ext import routines
 import SessionStats_class
 import Player_class
 import datetime
-import time
 import asyncio
 
 
@@ -19,6 +18,7 @@ class Bot(commands.Bot):
         # prefix can be a callable, which returns a list of strings or a string...
         # initial_channels can also be a callable which returns a list of strings...
         super().__init__(token = os.getenv("TMI_TOKEN"), prefix='!', initial_channels=['Waikin_'])
+        self.eventMessage: str
 
     async def event_ready(self):
         # Notify us when everything is ready!
@@ -30,6 +30,14 @@ class Bot(commands.Bot):
     async def event_channel_joined(self, channel: twitchio.Channel):
         await channel.send("/me HAS ARRIVED!")
 
+    # collects all message content
+    async def event_message(self, message):
+        if message.echo:
+            return
+        print(message.content)
+        self.eventMessage = message.content
+        await self.handle_commands(message)
+        
 
     # basic hello command
     @commands.command(name="hello")
@@ -46,7 +54,11 @@ class Bot(commands.Bot):
             initial_player = Player_class.Player(session.server, session.user_name)
             initial_player.fetchStats()
 
-            time.sleep(5)
+            #print(f"Before await: {datetime.datetime.now()}")
+
+            await asyncio.sleep(10) # wait 10 seconds, then compare with initial player stats
+
+            #print(f"After await: {datetime.datetime.now()}")
 
             player_now = Player_class.Player(session.server, session.user_name)
             player_now.fetchStats()
@@ -62,11 +74,15 @@ class Bot(commands.Bot):
                 await ctx.send(battle_stats)                 
             else:
                 print(f"No new battles found at {datetime.datetime.now()}\n")
-                await ctx.send("Im depressed")            
-        
+                await ctx.send("New game not found COPIUM")            
+
+            if self.eventMessage == "session_stop":
+                print("Rotuine is stopped")
+                await ctx.send("Session has ended!")
+                routine.stop()
+
         routine.start()
-
-
+     
     @commands.command(name="start")
     async def session_tracking(self, ctx: commands.Context):
         
@@ -76,13 +92,7 @@ class Bot(commands.Bot):
         print(start_msg)
         await ctx.send(start_msg)
 
-        try:
-            await self.session_calculations(ctx)
-
-        except KeyboardInterrupt:
-            print('Session Ended')
-            #print(session.sessionStats)
-            await ctx.send("Session has been ended!")
+        await self.session_calculations(ctx)
 
                 
                 

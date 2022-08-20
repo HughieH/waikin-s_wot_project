@@ -34,13 +34,13 @@ class SessionStatsTracker:
             result = "BATTLE LOST"
         
         time = datetime.datetime.now()
-        battleStats = {time.strftime("%c"): {"Tank_ID": tank_id, "Damage": diffInStats['damage_dealt'], "WN8": round(wn8, 2), "Kills": diffInStats['frags'],
+        battleStats = {time.strftime("%c"): {"Tank_ID": tank_id, "Damage": diffInStats['damage_dealt'], "WN8": int(wn8), "Kills": diffInStats['frags'],
             "Exp": diffInStats['xp']}}
         
 
         self.sessionStats.update(battleStats)
         
-        return f"{result}\nDamge: {diffInStats['damage_dealt']}\nWN8: {round(wn8, 2)}\nKills: {diffInStats['frags']}\nExp: {diffInStats['xp']}\n"
+        return f"{result}\nDamge: {diffInStats['damage_dealt']}\nWN8: {int(wn8)}\nKills: {diffInStats['frags']}\nExp: {diffInStats['xp']}\n"
     
     def startSessionTracking(self):
 
