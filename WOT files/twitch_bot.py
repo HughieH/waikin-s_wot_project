@@ -19,6 +19,7 @@ class Bot(commands.Bot):
         # initial_channels can also be a callable which returns a list of strings...
         super().__init__(token = os.getenv("TMI_TOKEN"), prefix='!', initial_channels=['Waikin_'])
         self.eventMessage: str
+        self.session: dict
 
     async def event_ready(self):
         # Notify us when everything is ready!
@@ -45,17 +46,64 @@ class Bot(commands.Bot):
         await ctx.send(f'Hello {ctx.author.name}!')
 
 
-    async def session_calculations(self, ctx: commands.Context):
+    @routines.routine(seconds = 5.0)
+    async def routine(self):
+            
+        #print(f"Before await: {datetime.datetime.now()}")
+        session = SessionStats_class.SessionStatsTracker("na", "waikin_reppinKL")
+        initial_player = Player_class.Player(session.server, session.user_name)
+        initial_player.fetchStats()
+            
+        await asyncio.sleep(10) # wait 10 seconds, then compare with initial player stats
+
+        #print(f"After await: {datetime.datetime.now()}")
+
+        player_now = Player_class.Player(session.server, session.user_name)
+        player_now.fetchStats()
+        tank_id = session.diffInBattles(initial_player, player_now)
+            
+        if tank_id:                 
+            print(f"NEW battles found at {datetime.datetime.now()}")
+            print(f"Tank ID with new battle is {tank_id}")
+            inital_tank = initial_player.individualTank(tank_id)
+            tank_now = player_now.individualTank(tank_id)
+            battle_stats = session.battleStats(tank_id, inital_tank, tank_now)
+            print(battle_stats)
+            await ctx.send(battle_stats)                 
+        else:
+            print(f"No new battles found at {datetime.datetime.now()}\n")
+            #await ctx.send("New game not found COPIUM")            
+
+        self.session = session.sessionStats
+
+    # basic hello command
+    @commands.command(name="stop")
+    async def hello(self, ctx: commands.Context):
+        
+        
+        self.routine.stop()
+    
+    @commands.command(name="start")
+    async def hello(self, ctx: commands.Context):
+        
+        print(f"Session stats initialized at {datetime.datetime.now()}\n")
+        await ctx.send(f"Session stats initialized at {datetime.datetime.now()}\n")
+        self.routine.start()
+
+    """
+    @commands.command(name="start")
+    async def session_tracking(self, ctx: commands.Context):
+        
+        # rewriting session stats tracker here, can't figure out a way to send messages to channel while within the while loop
 
         @routines.routine(seconds = 5.0)
         async def routine():
             
+            #print(f"Before await: {datetime.datetime.now()}")
             session = SessionStats_class.SessionStatsTracker("na", "waikin_reppinKL")
             initial_player = Player_class.Player(session.server, session.user_name)
             initial_player.fetchStats()
-
-            #print(f"Before await: {datetime.datetime.now()}")
-
+            
             await asyncio.sleep(10) # wait 10 seconds, then compare with initial player stats
 
             #print(f"After await: {datetime.datetime.now()}")
@@ -74,31 +122,17 @@ class Bot(commands.Bot):
                 await ctx.send(battle_stats)                 
             else:
                 print(f"No new battles found at {datetime.datetime.now()}\n")
-                await ctx.send("New game not found COPIUM")            
+                #await ctx.send("New game not found COPIUM")            
 
             if self.eventMessage == "session_stop":
                 print("Rotuine is stopped")
                 await ctx.send("Session has ended!")
                 routine.stop()
+                self.session = session.sessionStats
 
         routine.start()
-     
-    @commands.command(name="start")
-    async def session_tracking(self, ctx: commands.Context):
-        
-        # rewriting session stats tracker here, can't figure out a way to send messages to channel while within the while loop
-       
-        start_msg = f"Session initialized at {datetime.datetime.now()}\n"
-        print(start_msg)
-        await ctx.send(start_msg)
-
-        await self.session_calculations(ctx)
-
+        """
                 
-                
-
-
-
 bot = Bot()
 bot.run()
 

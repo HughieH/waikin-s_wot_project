@@ -29,13 +29,13 @@ class SessionStatsTracker:
             diffInStats['frags'], diffInStats['spotted'], diffInStats['wins'] * 100)
         
         if diffInStats["wins"]:
-            result = "BATTLE WON"
+            result = "BATTLE WON waikinHype"
         else:
-            result = "BATTLE LOST"
+            result = "BATTLE LOST qbSobad"
         
         time = datetime.datetime.now()
         battleStats = {time.strftime("%c"): {"Tank_ID": tank_id, "Damage": diffInStats['damage_dealt'], "WN8": int(wn8), "Kills": diffInStats['frags'],
-            "Exp": diffInStats['xp']}}
+            "Exp": diffInStats['xp'], "Wins": diffInStats["wins"]}}
         
 
         self.sessionStats.update(battleStats)
