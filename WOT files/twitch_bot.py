@@ -18,8 +18,12 @@ class Bot(commands.Bot):
         # prefix can be a callable, which returns a list of strings or a string...
         # initial_channels can also be a callable which returns a list of strings...
         super().__init__(token = os.getenv("TMI_TOKEN"), prefix='!', initial_channels=['Waikin_'])
-        self.eventMessage: str
-        self.session: dict
+        
+        self.eventMessage: str 
+        self.overallSession: dict
+        self.session: SessionStats_class.SessionStatsTracker
+        self.initialPlayer: Player_class.Player # initializing as an instance variable as I want routine to continuosly update it for reference when finding latest battle
+        
 
     async def event_ready(self):
         # Notify us when everything is ready!
@@ -47,92 +51,45 @@ class Bot(commands.Bot):
 
 
     @routines.routine(seconds = 5.0)
-    async def routine(self):
-            
-        #print(f"Before await: {datetime.datetime.now()}")
-        session = SessionStats_class.SessionStatsTracker("na", "waikin_reppinKL")
-        initial_player = Player_class.Player(session.server, session.user_name)
-        initial_player.fetchStats()
-            
-        await asyncio.sleep(10) # wait 10 seconds, then compare with initial player stats
+    async def routine(self, ctx: commands.Context):
 
-        #print(f"After await: {datetime.datetime.now()}")
-
-        player_now = Player_class.Player(session.server, session.user_name)
+        player_now = Player_class.Player(self.session.server, self.session.user_name)
         player_now.fetchStats()
-        tank_id = session.diffInBattles(initial_player, player_now)
+        tank_id = self.session.diffInBattles(self.initialPlayer, player_now)
             
         if tank_id:                 
             print(f"NEW battles found at {datetime.datetime.now()}")
             print(f"Tank ID with new battle is {tank_id}")
-            inital_tank = initial_player.individualTank(tank_id)
+            inital_tank = self.initialPlayer.individualTank(tank_id)
             tank_now = player_now.individualTank(tank_id)
-            battle_stats = session.battleStats(tank_id, inital_tank, tank_now)
+            battle_stats = self.session.battleStats(tank_id, inital_tank, tank_now)
             print(battle_stats)
             await ctx.send(battle_stats)                 
         else:
             print(f"No new battles found at {datetime.datetime.now()}\n")
-            #await ctx.send("New game not found COPIUM")            
+            # await ctx.send("New game not found COPIUM")            
 
-        self.session = session.sessionStats
+        self.initialPlayer = player_now # update latest player to initial for comparison in the next routine cycle
 
-    # basic hello command
     @commands.command(name="stop")
-    async def hello(self, ctx: commands.Context):
+    async def stopSession(self, ctx: commands.Context):
         
-        
+        await ctx.send("Session has been ended!")
+        print("Session has been ended!")
         self.routine.stop()
     
     @commands.command(name="start")
-    async def hello(self, ctx: commands.Context):
+    async def startSession(self, ctx: commands.Context):
         
         print(f"Session stats initialized at {datetime.datetime.now()}\n")
         await ctx.send(f"Session stats initialized at {datetime.datetime.now()}\n")
-        self.routine.start()
-
-    """
-    @commands.command(name="start")
-    async def session_tracking(self, ctx: commands.Context):
         
-        # rewriting session stats tracker here, can't figure out a way to send messages to channel while within the while loop
-
-        @routines.routine(seconds = 5.0)
-        async def routine():
-            
-            #print(f"Before await: {datetime.datetime.now()}")
-            session = SessionStats_class.SessionStatsTracker("na", "waikin_reppinKL")
-            initial_player = Player_class.Player(session.server, session.user_name)
-            initial_player.fetchStats()
-            
-            await asyncio.sleep(10) # wait 10 seconds, then compare with initial player stats
-
-            #print(f"After await: {datetime.datetime.now()}")
-
-            player_now = Player_class.Player(session.server, session.user_name)
-            player_now.fetchStats()
-            tank_id = session.diffInBattles(initial_player, player_now)
-            
-            if tank_id:                 
-                print(f"NEW battles found at {datetime.datetime.now()}")
-                print(f"Tank ID with new battle is {tank_id}")
-                inital_tank = initial_player.individualTank(tank_id)
-                tank_now = player_now.individualTank(tank_id)
-                battle_stats = session.battleStats(tank_id, inital_tank, tank_now)
-                print(battle_stats)
-                await ctx.send(battle_stats)                 
-            else:
-                print(f"No new battles found at {datetime.datetime.now()}\n")
-                #await ctx.send("New game not found COPIUM")            
-
-            if self.eventMessage == "session_stop":
-                print("Rotuine is stopped")
-                await ctx.send("Session has ended!")
-                routine.stop()
-                self.session = session.sessionStats
-
-        routine.start()
-        """
-                
+        self.session = SessionStats_class.SessionStatsTracker("na", "waikin_reppinKL")
+        self.initialPlayer = Player_class.Player(self.session.server, self.session.user_name)
+        self.initialPlayer.fetchStats()
+        
+        self.routine.start(ctx)
+         
 bot = Bot()
 bot.run()
 
