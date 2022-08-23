@@ -1,6 +1,7 @@
 class ColorIcon:
 
-    def __init__(self, player_wn8, player_wr, player_wg_rating, player_server):
+    def __init__(self, player_wn8, player_wr = 0, player_wg_rating = 0, player_server = "na"):
+        # initialized with set values
 
         self.wn8 = player_wn8
         self.server = player_server
@@ -67,3 +68,6 @@ class ColorIcon:
             return ":flag_ru:"
         if self.server == "asia":
             return ":flag_sg:"
+
+test = ColorIcon(1000)
+print(test.colorWN8())
