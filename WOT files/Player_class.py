@@ -7,7 +7,7 @@ import Color_icon_class
 
 class Player:
 
-    def __init__(self, server, user_name):
+    def __init__(self, server: str, user_name: str):
         
         # load all_tank_data.json file, this is a dictionary of all tank information (e.g. tank name, tier, etc. ), key is based on Tank ID
         self.allTankopediaData = (json.load(open("all_tank_data.json")))["data"]
@@ -190,8 +190,6 @@ class Player:
         print("Total battles is: " + str(self.totalBattles))
         print("Overall win rate is " + str(self.winRate))
         print("Overall dpg is " + str(self.dpg))
-
-        print("Overall wn8 is: " + str(self.overallAccountWn8))
         print("-------------------------------------------------")
         print("Sorted list of Tanks: ")
         print("-------------------------------------------------")

@@ -16,6 +16,7 @@ class SessionStatsTracker:
         self.totalbattles = self.total_wins = 0
         self.sessionStats = {}
 
+    # finds if there is a difference in battles between two player classes
     def diffInBattles(self, player_before: Player_class.Player, player_after: Player_class.Player):
     
         tank_id = False
@@ -26,8 +27,10 @@ class SessionStatsTracker:
 
         return tank_id
     
+    # finds the difference in stats between two players fir the individual tank
     def twitchBattleStats(self, tank_id, stats_before, stats_after):
         
+        # dict comprehension
         diffInStats = {parameter: stats_after[parameter] - stats_before[parameter] for parameter in stats_before}
         
         wn8 = expectedValueWN8.calculateWn8(tank_id, diffInStats['damage_dealt'], diffInStats['dropped_capture_points'], 
@@ -45,7 +48,6 @@ class SessionStatsTracker:
         battleStats = {time.strftime("%c"): {"Tank_ID": tank_id, "Tank_name": tank_name, "Damage": diffInStats['damage_dealt'], "WN8": int(wn8), "Kills": diffInStats['frags'],
             "Exp": diffInStats['xp'], "Win": diffInStats["wins"]}}
         
-
         self.sessionStats.update(battleStats)
         
         # string message output in twitch chat
