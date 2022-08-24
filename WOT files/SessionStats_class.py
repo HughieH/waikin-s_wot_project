@@ -4,6 +4,7 @@ import datetime
 import time
 import expectedValueWN8
 import Color_icon_class
+import SessionStats_DB
 
 class SessionStatsTracker:
 
@@ -49,9 +50,14 @@ class SessionStatsTracker:
             "Exp": diffInStats['xp'], "Win": diffInStats["wins"]}}
         
         self.sessionStats.update(battleStats)
+
+        # update DB
+        insert = SessionStats_DB.insertBattle(time.strftime("%c"), tank_id, tank_name, diffInStats['damage_dealt'], 
+            int(wn8), diffInStats['frags'], diffInStats['xp'], diffInStats["wins"])
+        SessionStats_DB.connect(insert, "session_stats")
         
         # string message output in twitch chat
-        return f"{tank_name} -> {result} || Damge: {diffInStats['damage_dealt']} || WN8: {int(wn8)} {wn8_color_icon} \
+        return f"{tank_name} -> {result} || Damge: {diffInStats['damage_dealt']} || WN8: {int(wn8)} {wn8_color_icon.colorWN8()} \
         || Kills: {diffInStats['frags']} || Exp: {diffInStats['xp']}"
     
     # prototype version of session tracking using while loop and keyboard interrupt to end event loop

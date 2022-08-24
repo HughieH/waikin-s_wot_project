@@ -69,5 +69,5 @@ class ColorIcon:
         if self.server == "asia":
             return ":flag_sg:"
 
-test = ColorIcon(1000)
-print(test.colorWN8())
+#test = ColorIcon(1000)
+#print(test.colorWN8())
