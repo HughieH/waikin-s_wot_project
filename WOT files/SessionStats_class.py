@@ -5,6 +5,7 @@ import time
 import expectedValueWN8
 import Color_icon_class
 import SessionStats_DB
+import Tomato_info_class
 
 class SessionStatsTracker:
 
@@ -15,9 +16,10 @@ class SessionStatsTracker:
         self.server = server
         self.user_name = user_name
         self.totalbattles = self.total_wins = 0
+        self.lastBattle: str
         self.sessionStats = {}
 
-    # finds if there is a difference in battles between two player classes
+    # Helper function that finds if there is a difference in battles between two player classes
     def diffInBattles(self, player_before: Player_class.Player, player_after: Player_class.Player):
     
         tank_id = False
@@ -26,14 +28,16 @@ class SessionStatsTracker:
             if player_before.allTankBattles[tank]["battles"] != player_after.allTankBattles[tank]["battles"]:
                 tank_id = tank # tank_id integer for tank that has new battle
 
+        # returns tank_id that has a new battle
         return tank_id
     
-    # finds the difference in stats between two players fir the individual tank
-    def twitchBattleStats(self, tank_id, stats_before, stats_after):
+    # finds the difference in stats between two players objects for the individual tank
+    def battleStats(self, tank_id, stats_before: Player_class.Player.individualTank, stats_after: Player_class.Player.individualTank):
         
-        # dict comprehension
+        # dict comprehension, diffInStats dict now contains tank stats for individual battles
         diffInStats = {parameter: stats_after[parameter] - stats_before[parameter] for parameter in stats_before}
         
+        # calculate wn8 and assign tank name
         wn8 = expectedValueWN8.calculateWn8(tank_id, diffInStats['damage_dealt'], diffInStats['dropped_capture_points'], 
             diffInStats['frags'], diffInStats['spotted'], diffInStats['wins'] * 100)
         wn8_color_icon = Color_icon_class.ColorIcon(wn8)
@@ -44,11 +48,11 @@ class SessionStatsTracker:
         else:
             result = "BATTLE LOST 💀"
         
-        
         time = datetime.datetime.now()
+        
+        # update session instance variable dict object
         battleStats = {time.strftime("%c"): {"Tank_ID": tank_id, "Tank_name": tank_name, "Damage": diffInStats['damage_dealt'], "WN8": int(wn8), "Kills": diffInStats['frags'],
             "Exp": diffInStats['xp'], "Win": diffInStats["wins"]}}
-        
         self.sessionStats.update(battleStats)
 
         # update DB
@@ -56,10 +60,13 @@ class SessionStatsTracker:
             int(wn8), diffInStats['frags'], diffInStats['xp'], diffInStats["wins"])
         SessionStats_DB.connect(insert, "session_stats")
         
-        # string message output in twitch chat
-        return f"{tank_name} -> {result} || Damge: {diffInStats['damage_dealt']} || WN8: {int(wn8)} {wn8_color_icon.colorWN8()} \
+        # string message assigned to self.LastBattle
+        self.lastBattle = f"{tank_name} -> {result} || Damge: {diffInStats['damage_dealt']} || WN8: {int(wn8)} {wn8_color_icon.colorWN8()} \
         || Kills: {diffInStats['frags']} || Exp: {diffInStats['xp']}"
     
+
+
+
     # prototype version of session tracking using while loop and keyboard interrupt to end event loop
     def startSessionTracking(self):
 

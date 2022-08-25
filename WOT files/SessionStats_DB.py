@@ -17,7 +17,12 @@ def insertBattle(battle_time, tank_id, tank_name, damage, wn8, kills, xp, win):
     RETURNING *;
     """
 
-def connect(sql, table):
+# UPDATE SQL query statement for overall session
+def updateOverall():
+    pass
+
+# CONNECT to postgres databse and execute SQL query
+def connect(query, table):
     """ Connect to the PostgreSQL database server """
 
     try: 
@@ -33,14 +38,18 @@ def connect(sql, table):
         # create a cursor
         cur = conn.cursor()
         
-        cur.executemany(sql, (table,))
+        cur.executemany(query, (table,))
 
         conn.commit()
        
 	# close the communication with the PostgreSQL
         cur.close()
+    
     except (Exception, psycopg2.DatabaseError) as error:
+        print("-----------------------------------")
         print(error)
+        print("-----------------------------------")
+
     finally:
         if conn is not None:
             conn.close()
