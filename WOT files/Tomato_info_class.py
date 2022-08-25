@@ -32,7 +32,9 @@ class TomatoGGInfo:
 
         # Recent stats by battles *includes battles, overall wins, wn8, and has specific tank stats
         self.recent1000 = self.recentStats["recent1000"]
+        self.recent1000Tanks = {int(tank["id"]): tank for tank in self.recentStats["recent1000"]["tankStats"]} # tank_id from tomato backed is in str format
         self.recent100 = self.recentStats["recent100"]
+        
         #self.recent60 = self.recentStats["recent60"] idk what 60 is
         #self.recent30 = self.recentStats["recent30"]
 
@@ -47,6 +49,7 @@ class TomatoGGInfo:
 
         return str(round(((wins/battles) * 100), 2))
 
+    # doesnt work
     def discordRecentsString(self):
 
         return (f"> **24 hr Recents:** {str(self.recent24hr['overallWN8'])} wn8 | {self.WR(self.recent24hr['wins'], self.recent24hr['battles'])} % WR\n"
@@ -55,9 +58,9 @@ class TomatoGGInfo:
         f"> **30 Day Recents:** {str(self.recent30days['overallWN8'])} wn8 | {self.WR(self.recent30days['wins'], self.recent30days['battles'])} % WR\n"
         f"> **60 Day Recents:** {str(self.recent60days['overallWN8'])} wn8 | {self.WR(self.recent60days['wins'], self.recent60days['battles'])} % WR\n")
 
-#test = TomatoGGInfo("na", "waikin_reppinKL")
-#print(test.discordRecentsString())
-#print(test.recent1000)
+test = TomatoGGInfo("na", "waikin_reppinKL")
+
+print(test.recent1000Tanks)
 
 
 

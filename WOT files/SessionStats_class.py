@@ -13,13 +13,15 @@ class SessionStatsTracker:
         
         # load all_tank_data.json file, this is a dictionary of all tank information (e.g. tank name, tier, etc. ), key is based on Tank ID
         self.allTankopediaData = (json.load(open("all_tank_data.json")))["data"]
+        # instance variables assigned to self variables
         self.server = server
         self.user_name = user_name
         self.totalbattles = self.total_wins = 0
         self.lastBattle: str
+        self.scoreAgainstQB = {"Waikin": 0, "QuickyBaby": 0}
         self.sessionStats = {}
 
-    # Helper function that finds if there is a difference in battles between two player classes
+    # Helper function that finds if there is a difference in battles between two player classes -> result of this function used in battleStats
     def diffInBattles(self, player_before: Player_class.Player, player_after: Player_class.Player):
     
         tank_id = False
@@ -31,7 +33,28 @@ class SessionStatsTracker:
         # returns tank_id that has a new battle
         return tank_id
     
-    # finds the difference in stats between two players objects for the individual tank
+    # Helper function compares tank specific damage, wn8, kills, and spots, between player 1 and QB's 1000 day recents
+
+    def compareToQB(self, tank_id, damage_me, wn8_me, kills_me):
+        
+        qb = Tomato_info_class.TomatoGGInfo("eu", "Quickfingers")
+        qbTankStats = qb.recent1000Tanks[tank_id] # tomato tank stats, key is tank id (int), value is dictionary of stats
+        waikinPnt = qbPnt = 0
+        
+        if qbTankStats["dpg"] > damage_me: qbPnt += 1
+        if qbTankStats["dpg"] < damage_me: waikinPnt += 1
+        if qbTankStats["wn8"] > wn8_me: qbPnt += 1
+        if qbTankStats["wn8"] < wn8_me: waikinPnt += 1
+        if qbTankStats["kpg"] > kills_me: qbPnt += 1
+        if qbTankStats["kpg"] < kills_me: waikinPnt += 1
+        
+        return f"""
+        Over the last 1000 battles in the {qbTankStats['name']}, QB on average does {qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
+        and {qbTankStats['kpg']} kills || Waikin did {damage_me} damage, {wn8_me} wn8, and {kills_me} kills.
+        """
+        
+
+    # finds the difference in stats between two players objects for the individual tank, we get tank_id from diffInBattles helper function
     def battleStats(self, tank_id, stats_before: Player_class.Player.individualTank, stats_after: Player_class.Player.individualTank):
         
         # dict comprehension, diffInStats dict now contains tank stats for individual battles
@@ -61,11 +84,10 @@ class SessionStatsTracker:
         SessionStats_DB.connect(insert, "session_stats")
         
         # string message assigned to self.LastBattle
+        # why am I not returning the string? It's because I want to make the string available to the object I guess...
         self.lastBattle = f"{tank_name} -> {result} || Damge: {diffInStats['damage_dealt']} || WN8: {int(wn8)} {wn8_color_icon.colorWN8()} \
         || Kills: {diffInStats['frags']} || Exp: {diffInStats['xp']}"
     
-
-
 
     # prototype version of session tracking using while loop and keyboard interrupt to end event loop
     def startSessionTracking(self):
@@ -87,7 +109,8 @@ class SessionStatsTracker:
                     print(f"Tank ID with new battle is {tank_id}")
                     inital_tank = initial_player.individualTank(tank_id)
                     tank_now = player_now.individualTank(tank_id)
-                    print(self.twitchBattleStats(tank_id, inital_tank, tank_now))
+                    self.battleStats(tank_id, inital_tank, tank_now)
+                    print(self.lastBattle)
                     
                     # last-battle updated stats, this keeps the session specific to new battles
                     initial_player = player_now
@@ -100,5 +123,5 @@ class SessionStatsTracker:
             print('Session Ended')
             print(self.sessionStats)
 
-#test = SessionStatsTracker("na", "waikin_reppinKL")
-#test.startSessionTracking()
+test = SessionStatsTracker("na", "waikin_reppinKL")
+test.compareToQB()
