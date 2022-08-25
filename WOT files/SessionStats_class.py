@@ -17,7 +17,8 @@ class SessionStatsTracker:
         self.server = server
         self.user_name = user_name
         self.totalbattles = self.total_wins = 0
-        self.lastBattle: str
+        self.lastBattle: str # call method to fill string message
+        self.compareQBMsg: dict # 3 key-value pairs
         self.scoreAgainstQB = {"Waikin": 0, "QuickyBaby": 0}
         self.sessionStats = {}
 
@@ -48,10 +49,13 @@ class SessionStatsTracker:
         if qbTankStats["kpg"] > kills_me: qbPnt += 1
         if qbTankStats["kpg"] < kills_me: waikinPnt += 1
         
-        return f"""
-        Over the last 1000 battles in the {qbTankStats['name']}, QB on average does {qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
+        self.scoreAgainstQB["Waikin"] += waikinPnt
+        self.scoreAgainstQB["QuickyBaby"] += qbPnt
+
+        self.compareQBMsg = {"compare_msg": f"""
+        Over the last 1000 battles in the {qbTankStats['name']}, QB on AVERAGE does {qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
         and {qbTankStats['kpg']} kills || Waikin did {damage_me} damage, {wn8_me} wn8, and {kills_me} kills.
-        """
+        """, "current_waikin_point": waikinPnt, "current_qb_point": qbPnt}
         
 
     # finds the difference in stats between two players objects for the individual tank, we get tank_id from diffInBattles helper function
@@ -73,6 +77,8 @@ class SessionStatsTracker:
         
         time = datetime.datetime.now()
         
+        self.compareToQB(tank_id, diffInStats['damage_dealt'], int(wn8), diffInStats['frags'])
+
         # update session instance variable dict object
         battleStats = {time.strftime("%c"): {"Tank_ID": tank_id, "Tank_name": tank_name, "Damage": diffInStats['damage_dealt'], "WN8": int(wn8), "Kills": diffInStats['frags'],
             "Exp": diffInStats['xp'], "Win": diffInStats["wins"]}}

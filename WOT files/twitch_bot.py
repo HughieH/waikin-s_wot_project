@@ -61,9 +61,13 @@ class waikinBot(commands.Bot):
             print(f"Tank ID with new battle is {tank_id}")
             inital_tank = self.initialPlayer.individualTank(tank_id)
             tank_now = player_now.individualTank(tank_id)
-            battle_stats = self.session.BattleStats(tank_id, inital_tank, tank_now)
-            print(battle_stats)
-            await ctx.send(battle_stats)                 
+            self.session.battleStats(tank_id, inital_tank, tank_now)
+            
+            print(self.session.lastBattle)
+            await ctx.send(self.session.lastBattle)
+            print(self.session.compareQBMsg["compare_msg"])
+            await ctx.send(self.session.compareQBMsg["compare_msg"])
+
         else:
             print(f"No new battles found at {datetime.datetime.now()}\n")
             # await ctx.send("New game not found COPIUM")            
