@@ -18,7 +18,7 @@ class SessionStatsTracker:
         self.user_name = user_name
         self.totalbattles = self.total_wins = 0
         self.lastBattle: str # call method to fill string message
-        self.compareQBMsg: dict # 3 key-value pairs
+        self.compareQBMsg: str # call method to fill comparison to QB message
         self.scoreAgainstQB = {"Waikin": 0, "QuickyBaby": 0}
         self.sessionStats = {}
 
@@ -52,10 +52,12 @@ class SessionStatsTracker:
         self.scoreAgainstQB["Waikin"] += waikinPnt
         self.scoreAgainstQB["QuickyBaby"] += qbPnt
 
-        self.compareQBMsg = {"compare_msg": f"""
-        Over the last 1000 battles in the {qbTankStats['name']}, QB on AVERAGE does {qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
-        and {qbTankStats['kpg']} kills || Waikin did {damage_me} damage, {wn8_me} wn8, and {kills_me} kills.
-        """, "current_waikin_point": waikinPnt, "current_qb_point": qbPnt}
+        self.compareQBMsg = f"""
+        Over the last 1000 battles in the {qbTankStats['name']}, QB on AVERAGE does -> {qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
+        {qbTankStats['kpg']} kills || Waikin did {damage_me} damage, {wn8_me} wn8, and {kills_me} kills || Waikin gets {waikinPnt} point(s), QB gets {qbPnt} point(s)!
+        """ 
+        
+     
         
 
     # finds the difference in stats between two players objects for the individual tank, we get tank_id from diffInBattles helper function
@@ -65,8 +67,8 @@ class SessionStatsTracker:
         diffInStats = {parameter: stats_after[parameter] - stats_before[parameter] for parameter in stats_before}
         
         # calculate wn8 and assign tank name
-        wn8 = expectedValueWN8.calculateWn8(tank_id, diffInStats['damage_dealt'], diffInStats['dropped_capture_points'], 
-            diffInStats['frags'], diffInStats['spotted'], diffInStats['wins'] * 100)
+        wn8 = int(expectedValueWN8.calculateWn8(tank_id, diffInStats['damage_dealt'], diffInStats['dropped_capture_points'], 
+            diffInStats['frags'], diffInStats['spotted'], diffInStats['wins'] * 100))
         wn8_color_icon = Color_icon_class.ColorIcon(wn8)
         tank_name = self.allTankopediaData[str(tank_id)]["name"]
         
@@ -77,16 +79,16 @@ class SessionStatsTracker:
         
         time = datetime.datetime.now()
         
-        self.compareToQB(tank_id, diffInStats['damage_dealt'], int(wn8), diffInStats['frags'])
+        self.compareToQB(tank_id, diffInStats['damage_dealt'], wn8, diffInStats['frags'])
 
         # update session instance variable dict object
-        battleStats = {time.strftime("%c"): {"Tank_ID": tank_id, "Tank_name": tank_name, "Damage": diffInStats['damage_dealt'], "WN8": int(wn8), "Kills": diffInStats['frags'],
+        battleStats = {time.strftime("%c"): {"Tank_ID": tank_id, "Tank_name": tank_name, "Damage": diffInStats['damage_dealt'], "WN8": wn8, "Kills": diffInStats['frags'],
             "Exp": diffInStats['xp'], "Win": diffInStats["wins"]}}
         self.sessionStats.update(battleStats)
 
         # update DB
         insert = SessionStats_DB.insertBattle(time.strftime("%c"), tank_id, tank_name, diffInStats['damage_dealt'], 
-            int(wn8), diffInStats['frags'], diffInStats['xp'], diffInStats["wins"])
+            wn8, diffInStats['frags'], diffInStats['xp'], diffInStats["wins"])
         SessionStats_DB.connect(insert, "session_stats")
         
         # string message assigned to self.LastBattle

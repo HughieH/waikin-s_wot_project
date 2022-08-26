@@ -65,8 +65,8 @@ class waikinBot(commands.Bot):
             
             print(self.session.lastBattle)
             await ctx.send(self.session.lastBattle)
-            print(self.session.compareQBMsg["compare_msg"])
-            await ctx.send(self.session.compareQBMsg["compare_msg"])
+            print(self.session.compareQBMsg)
+            await ctx.send(self.session.compareQBMsg)
 
         else:
             print(f"No new battles found at {datetime.datetime.now()}\n")
