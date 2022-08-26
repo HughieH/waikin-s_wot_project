@@ -46,8 +46,8 @@ class SessionStatsTracker:
         if qbTankStats["dpg"] < damage_me: waikinPnt += 1
         if qbTankStats["wn8"] > wn8_me: qbPnt += 1
         if qbTankStats["wn8"] < wn8_me: waikinPnt += 1
-        if qbTankStats["kpg"] > kills_me: qbPnt += 1
-        if qbTankStats["kpg"] < kills_me: waikinPnt += 1
+        if int(qbTankStats["kpg"]) > kills_me: qbPnt += 1
+        if int(qbTankStats["kpg"]) < kills_me: waikinPnt += 1
         
         self.scoreAgainstQB["Waikin"] += waikinPnt
         self.scoreAgainstQB["QuickyBaby"] += qbPnt

@@ -1,2 +1,2 @@
-
-print(345.8 > 341)
+str = "123"
+print(int(str))

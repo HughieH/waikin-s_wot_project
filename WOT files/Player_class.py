@@ -13,6 +13,7 @@ class Player:
         self.allTankopediaData = (json.load(open("all_tank_data.json")))["data"]
         self.username = user_name
         self.playerServer = server.lower()
+        # TODO API error handling
         #API error handling??
         
         if self.playerServer == "na":
