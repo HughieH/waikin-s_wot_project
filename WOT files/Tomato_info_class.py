@@ -58,9 +58,9 @@ class TomatoGGInfo:
         f"> **30 Day Recents:** {str(self.recent30days['overallWN8'])} wn8 | {self.WR(self.recent30days['wins'], self.recent30days['battles'])} % WR\n"
         f"> **60 Day Recents:** {str(self.recent60days['overallWN8'])} wn8 | {self.WR(self.recent60days['wins'], self.recent60days['battles'])} % WR\n")
 
-test = TomatoGGInfo("na", "waikin_reppinKL")
+#test = TomatoGGInfo("na", "waikin_reppinKL")
 
-print(test.recent1000Tanks)
+#print(test.recent1000Tanks)
 
 
 

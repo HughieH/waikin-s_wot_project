@@ -131,5 +131,5 @@ class SessionStatsTracker:
             print('Session Ended')
             print(self.sessionStats)
 
-test = SessionStatsTracker("na", "waikin_reppinKL")
-test.compareToQB()
+#test = SessionStatsTracker("na", "waikin_reppinKL")
+#test.compareToQB()
