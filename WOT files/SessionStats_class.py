@@ -4,7 +4,7 @@ import datetime
 import time
 import expectedValueWN8
 import Color_icon_class
-import SessionStats_DB
+import SessionStats_DB_class
 import Tomato_info_class
 
 class SessionStatsTracker:
@@ -13,6 +13,7 @@ class SessionStatsTracker:
         
         # load all_tank_data.json file, this is a dictionary of all tank information (e.g. tank name, tier, etc. ), key is based on Tank ID
         self.allTankopediaData = (json.load(open("all_tank_data.json")))["data"]
+        self.sessionDB = SessionStats_DB_class.SessionStatsDB()
         # instance variables assigned to self variables
         self.server = server
         self.user_name = user_name
@@ -36,7 +37,6 @@ class SessionStatsTracker:
         return tank_id
     
     # Helper function compares tank specific damage, wn8, kills, and spots, between player 1 and QB's 1000 day recents
-
     def compareToQB(self, tank_id, damage_me, wn8_me, kills_me):
         
         try:
@@ -97,15 +97,21 @@ class SessionStatsTracker:
         self.sessionStats.update(battleStats)
 
         # update DB
-        insert = SessionStats_DB.insertBattle(time.strftime("%c"), tank_id, tank_name, diffInStats['damage_dealt'], 
+        self.sessionDB.insertBattle(time.strftime("%c"), tank_id, tank_name, diffInStats['damage_dealt'], 
             wn8, diffInStats['frags'], diffInStats['xp'], diffInStats["wins"])
-        SessionStats_DB.connect(insert, "session_stats")
+
         
         # string message assigned to self.LastBattle
         # why am I not returning the string? It's because I want to make the string available to the object I guess...
         self.lastBattle = f"{tank_name} -> {result} || Damge: {diffInStats['damage_dealt']} || WN8: {int(wn8)} {wn8_color_icon.colorWN8()} \
         || Kills: {diffInStats['frags']} || Exp: {diffInStats['xp']}"
     
+    # returns the best game on the current date as a string
+    def bestGameOnCurrentDate(self):
+
+        # format of tuple is ('IS-4', 8508, 14405, datetime.datetime(2022, 8, 26, 21, 49, 26), 4, 0)
+        tuple = self.sessionDB.bestBattle()
+        return f"Best battle of the day was in the {tuple[0]} -> with {tuple[1]} damage and {tuple[2]} wn8 waikinGasm Battle took place at {tuple[3]}."
 
     # prototype version of session tracking using while loop and keyboard interrupt to end event loop
     def startSessionTracking(self):

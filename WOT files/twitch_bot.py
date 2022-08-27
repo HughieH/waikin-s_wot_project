@@ -42,10 +42,16 @@ class waikinBot(commands.Bot):
         await self.handle_commands(message)
         
     # basic hello command
+    @commands.command(name="currentbestgame")
+    async def currentBestGame(self, ctx: commands.Context):
+        try:
+            await ctx.send(self.session.bestGameOnCurrentDate())
+        except AttributeError:
+            await ctx.send("Session has not started yet!")
+
     @commands.command(name="hello")
     async def hello(self, ctx: commands.Context):
         await ctx.send(f'Hello {ctx.author.name}!')
-
 
     @routines.routine(seconds = 10.0)
     async def routine(self, ctx: commands.Context):
@@ -77,9 +83,11 @@ class waikinBot(commands.Bot):
     @commands.command(name="stop")
     async def stopSession(self, ctx: commands.Context):
         
-        await ctx.send("Session has been ended!")
-        print("Session has been ended!")
         self.routine.stop()
+        await ctx.send("Session has been ended!")
+        await ctx.send(self.session.overallTwitchCompareScore())
+        print("Session has been ended!")
+        
     
     @commands.command(name="start")
     async def startSession(self, ctx: commands.Context):

@@ -17,6 +17,9 @@ def insertBattle(battle_time, tank_id, tank_name, damage, wn8, kills, xp, win):
     RETURNING *;
     """
 
+def selectBattle():
+    pass
+
 # UPDATE SQL query statement for overall session
 def updateOverall():
     pass

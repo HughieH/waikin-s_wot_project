@@ -31,9 +31,8 @@ class TomatoGGInfo:
             counter = 0
             while tomato_json.status_code != 200:
                 counter += 1
-                print(f"{counter} times pinging API, status code is {tomato_json.status_code}\n")
                 tomato_json = requests.get(f"https://tomatobackend.herokuapp.com/api/player/{self.playerServer}/{str(self.accountID)}")
-            print(f"Status code is {tomato_json.status_code}")
+                print(f"{counter} times pinging API, status code is {tomato_json.status_code}\n")
             self.tomatoInfo = tomato_json.json()
         
         print("QB recent stats initialized")

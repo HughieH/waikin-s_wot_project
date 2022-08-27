@@ -3,7 +3,6 @@ import json
 import expectedValueWN8
 import averageExpectedOverallValueWN8
 from operator import itemgetter
-import Color_icon_class
 
 class Player:
 
@@ -16,22 +15,22 @@ class Player:
         # TODO API error handling
         
         if self.playerServer == "na":
-            player_info = ((requests.get("https://api.worldoftanks.com/wot/account/list/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&search=" + self.username, timeout = 3)).json())\
+            player_info = ((requests.get("https://api.worldoftanks.com/wot/account/list/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&search=" + self.username)).json())\
             ["data"][0] # DICT value keys for userID
         else:
-            player_info = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/account/list/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&search=" + self.username, timeout = 3)).json())\
+            player_info = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/account/list/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&search=" + self.username)).json())\
             ["data"][0]
         
         self.userID = player_info["account_id"]
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
         # overall stats
-        # TODO fix all timeout issues
+
         if self.playerServer == "na":
-            overall_info = ((requests.get("https://api.worldoftanks.com/wot/account/info/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID), timeout=3)).json())\
+            overall_info = ((requests.get("https://api.worldoftanks.com/wot/account/info/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID))).json())\
             ["data"][str(self.userID)] # DICT value keys for overall player info
         else: 
-            overall_info = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/account/info/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID), timeout=3)).json())\
+            overall_info = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/account/info/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID))).json())\
             ["data"][str(self.userID)]
 
         self.wgRating = overall_info["global_rating"]
@@ -55,7 +54,7 @@ class Player:
         else:
             self.allTankStats = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/tanks/stats/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID) +\
                 "&fields=-in_garage%2C+-frags%2C+-max_frags%2C+-team%2C+-stronghold_defense%2C+-globalmap%2C+-clan%2C+-stronghold_skirmish%2C+-company%2C+-regular_team%2C+-account_id%2C+-max_xp"\
-                , timeout=3)).json())["data"][str(self.userID)] 
+                )).json())["data"][str(self.userID)] 
 
         # number of tanks a player has ACCORDING to the WOT API, may not be the same once cross-referenced with the XVM expected values JSON file
         
