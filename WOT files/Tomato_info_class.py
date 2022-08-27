@@ -1,10 +1,8 @@
 import requests
 
 # HELPER FUNCTIONS
-def WR(wins, battles): return str((wins/battles) * 100)
+
 def dictComp(list): return {int(tank["id"]): tank for tank in list["recent1000"]["tankStats"]}
-#def apiErrorHandler(json: requests.get):
-    #while json
 
 class TomatoGGInfo:
 
@@ -28,6 +26,7 @@ class TomatoGGInfo:
             self.tomatoInfo = (requests.get(f"https://tomatobackend.herokuapp.com/api/player/com/{str(self.accountID)}")).json() #
         else:
             tomato_json = requests.get(f"https://tomatobackend.herokuapp.com/api/player/{self.playerServer}/{str(self.accountID)}")
+            print(type(tomato_json))
             counter = 0
             print(tomato_json.status_code)
             while tomato_json.status_code != 200:
@@ -43,9 +42,6 @@ class TomatoGGInfo:
         self.recent1000 = self.recentStats["recent1000"]
         self.recent1000Tanks = dictComp(self.recentStats) # tank_id from tomato backed is in str format
         self.recent100 = self.recentStats["recent100"]
-        
-        #self.recent60 = self.recentStats["recent60"] idk what 60 is
-        #self.recent30 = self.recentStats["recent30"]
 
         # Recent stats by days
         self.recent24hr = self.recentStats["recent24hr"]

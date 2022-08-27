@@ -54,16 +54,18 @@ class SessionStatsTracker:
             self.scoreAgainstQB["QuickyBaby"] += qbPnt
 
             self.compareQBMsg = f"""
-            Over the last 1000 battles in the {qbTankStats['name']}, QB on AVERAGE does -> {qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
-            {qbTankStats['kpg']} kills || Waikin did {damage_me} damage, {wn8_me} wn8, and {kills_me} kills || Waikin gets {waikinPnt} point(s), QB gets {qbPnt} point(s)!
+            Over the last 1000 battles in the {qbTankStats['name']}, QB on AVERAGE does -> ({qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
+            {qbTankStats['kpg']} kills) || Waikin did ({damage_me} damage, {wn8_me} wn8, and {kills_me} kills) || 
+            Waikin gets {waikinPnt} point(s) waikinHype , QB gets {qbPnt} point(s)! qbPoint
             """ 
         except KeyError:
             self.compareQBMsg = f"""
-            QB has not played this tank over the last 1000 battles. Current score -> Waikin: {self.scoreAgainstQB["Waikin"]} ||
-            QB: {self.scoreAgainstQB["QuickyBaby"]}
+            QB has not played this tank over the last 1000 battles.
             """ 
      
-        
+    def overallTwitchCompareScore(self): return f"Current total score -> Waikin: {self.scoreAgainstQB['Waikin']} || \
+        QB: {self.scoreAgainstQB['QuickyBaby']}"
+
 
     # finds the difference in stats between two players objects for the individual tank, we get tank_id from diffInBattles helper function
     def battleStats(self, tank_id, stats_before: Player_class.Player.individualTank, stats_after: Player_class.Player.individualTank):
@@ -135,6 +137,7 @@ class SessionStatsTracker:
         except KeyboardInterrupt:
             print('Session Ended')
             print(self.sessionStats)
+
 
 #test = SessionStatsTracker("na", "waikin_reppinKL")
 #test.compareToQB(33, 500, 1000, 3)

@@ -6,8 +6,6 @@ from twitchio.ext import routines
 import SessionStats_class
 import Player_class
 import datetime
-import asyncio
-
 
 load_dotenv() # load enviroment variables
 
@@ -67,6 +65,8 @@ class waikinBot(commands.Bot):
             await ctx.send(self.session.lastBattle)
             print(self.session.compareQBMsg)
             await ctx.send(self.session.compareQBMsg)
+            print(self.session.overallTwitchCompareScore())
+            await ctx.send(self.session.overallTwitchCompareScore())
 
         else:
             print(f"No new battles found at {datetime.datetime.now()}\n")
