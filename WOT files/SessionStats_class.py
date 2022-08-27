@@ -18,6 +18,7 @@ class SessionStatsTracker:
         self.user_name = user_name
         self.totalbattles = self.total_wins = 0
         self.lastBattle: str # call method to fill string message
+        self.qbStats = Tomato_info_class.TomatoGGInfo("eu", "Quickfingers")
         self.compareQBMsg: str # call method to fill comparison to QB message
         self.scoreAgainstQB = {"Waikin": 0, "QuickyBaby": 0}
         self.sessionStats = {}
@@ -38,25 +39,29 @@ class SessionStatsTracker:
 
     def compareToQB(self, tank_id, damage_me, wn8_me, kills_me):
         
-        qb = Tomato_info_class.TomatoGGInfo("eu", "Quickfingers")
-        qbTankStats = qb.recent1000Tanks[tank_id] # tomato tank stats, key is tank id (int), value is dictionary of stats
-        waikinPnt = qbPnt = 0
-        
-        if qbTankStats["dpg"] > damage_me: qbPnt += 1
-        if qbTankStats["dpg"] < damage_me: waikinPnt += 1
-        if qbTankStats["wn8"] > wn8_me: qbPnt += 1
-        if qbTankStats["wn8"] < wn8_me: waikinPnt += 1
-        if int(qbTankStats["kpg"]) > kills_me: qbPnt += 1
-        if int(qbTankStats["kpg"]) < kills_me: waikinPnt += 1
-        
-        self.scoreAgainstQB["Waikin"] += waikinPnt
-        self.scoreAgainstQB["QuickyBaby"] += qbPnt
+        try:
+            qbTankStats = self.qbStats.recent1000Tanks[tank_id] # tomato tank stats, key is tank id (int), value is dictionary of stats
+            waikinPnt = qbPnt = 0
+            
+            if qbTankStats["dpg"] > damage_me: qbPnt += 1
+            if qbTankStats["dpg"] < damage_me: waikinPnt += 1
+            if qbTankStats["wn8"] > wn8_me: qbPnt += 1
+            if qbTankStats["wn8"] < wn8_me: waikinPnt += 1
+            if float(qbTankStats["kpg"]) > kills_me: qbPnt += 1
+            if float(qbTankStats["kpg"]) < kills_me: waikinPnt += 1
+            
+            self.scoreAgainstQB["Waikin"] += waikinPnt
+            self.scoreAgainstQB["QuickyBaby"] += qbPnt
 
-        self.compareQBMsg = f"""
-        Over the last 1000 battles in the {qbTankStats['name']}, QB on AVERAGE does -> {qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
-        {qbTankStats['kpg']} kills || Waikin did {damage_me} damage, {wn8_me} wn8, and {kills_me} kills || Waikin gets {waikinPnt} point(s), QB gets {qbPnt} point(s)!
-        """ 
-        
+            self.compareQBMsg = f"""
+            Over the last 1000 battles in the {qbTankStats['name']}, QB on AVERAGE does -> {qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
+            {qbTankStats['kpg']} kills || Waikin did {damage_me} damage, {wn8_me} wn8, and {kills_me} kills || Waikin gets {waikinPnt} point(s), QB gets {qbPnt} point(s)!
+            """ 
+        except KeyError:
+            self.compareQBMsg = f"""
+            QB has not played this tank over the last 1000 battles. Current score -> Waikin: {self.scoreAgainstQB["Waikin"]} ||
+            QB: {self.scoreAgainstQB["QuickyBaby"]}
+            """ 
      
         
 
@@ -132,4 +137,5 @@ class SessionStatsTracker:
             print(self.sessionStats)
 
 #test = SessionStatsTracker("na", "waikin_reppinKL")
-#test.compareToQB()
+#test.compareToQB(33, 500, 1000, 3)
+#print(test.compareQBMsg)

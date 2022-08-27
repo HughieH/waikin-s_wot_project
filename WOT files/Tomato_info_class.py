@@ -1,9 +1,10 @@
 import requests
-from operator import itemgetter
 
-def WR(self, wins, battles):
-
-        return str((wins/battles) * 100)
+# HELPER FUNCTIONS
+def WR(wins, battles): return str((wins/battles) * 100)
+def dictComp(list): return {int(tank["id"]): tank for tank in list["recent1000"]["tankStats"]}
+#def apiErrorHandler(json: requests.get):
+    #while json
 
 class TomatoGGInfo:
 
@@ -26,13 +27,21 @@ class TomatoGGInfo:
         if self.playerServer == "na":
             self.tomatoInfo = (requests.get(f"https://tomatobackend.herokuapp.com/api/player/com/{str(self.accountID)}")).json() #
         else:
-            self.tomatoInfo = (requests.get(f"https://tomatobackend.herokuapp.com/api/player/{(self.playerServer).upper()}/{str(self.accountID)}")).json()
+            tomato_json = requests.get(f"https://tomatobackend.herokuapp.com/api/player/{self.playerServer}/{str(self.accountID)}")
+            counter = 0
+            print(tomato_json.status_code)
+            while tomato_json.status_code != 200:
+                counter += 1
+                print(f"{counter} times pinging API, status code is {tomato_json.status_code}\n")
+                tomato_json = requests.get(f"https://tomatobackend.herokuapp.com/api/player/{self.playerServer}/{str(self.accountID)}")
+            self.tomatoInfo = tomato_json.json()
         
+        print("we made it here")
         self.recentStats = self.tomatoInfo["recents"]
 
         # Recent stats by battles *includes battles, overall wins, wn8, and has specific tank stats
         self.recent1000 = self.recentStats["recent1000"]
-        self.recent1000Tanks = {int(tank["id"]): tank for tank in self.recentStats["recent1000"]["tankStats"]} # tank_id from tomato backed is in str format
+        self.recent1000Tanks = dictComp(self.recentStats) # tank_id from tomato backed is in str format
         self.recent100 = self.recentStats["recent100"]
         
         #self.recent60 = self.recentStats["recent60"] idk what 60 is
@@ -58,9 +67,10 @@ class TomatoGGInfo:
         f"> **30 Day Recents:** {str(self.recent30days['overallWN8'])} wn8 | {self.WR(self.recent30days['wins'], self.recent30days['battles'])} % WR\n"
         f"> **60 Day Recents:** {str(self.recent60days['overallWN8'])} wn8 | {self.WR(self.recent60days['wins'], self.recent60days['battles'])} % WR\n")
 
-#test = TomatoGGInfo("na", "waikin_reppinKL")
+#qb = TomatoGGInfo("eu", "Quickfingers")
+#qbTankStats = qb.recent1000Tanks
 
-#print(test.recent1000Tanks)
+#print(qb.recent1000Tanks[33])
 
 
 
