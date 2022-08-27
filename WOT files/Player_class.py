@@ -14,7 +14,6 @@ class Player:
         self.username = user_name
         self.playerServer = server.lower()
         # TODO API error handling
-        #API error handling??
         
         if self.playerServer == "na":
             player_info = ((requests.get("https://api.worldoftanks.com/wot/account/list/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&search=" + self.username, timeout = 3)).json())\
@@ -27,6 +26,7 @@ class Player:
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
         # overall stats
+        # TODO fix all timeout issues
         if self.playerServer == "na":
             overall_info = ((requests.get("https://api.worldoftanks.com/wot/account/info/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID), timeout=3)).json())\
             ["data"][str(self.userID)] # DICT value keys for overall player info
