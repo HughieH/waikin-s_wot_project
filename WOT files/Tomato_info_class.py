@@ -26,16 +26,17 @@ class TomatoGGInfo:
             self.tomatoInfo = (requests.get(f"https://tomatobackend.herokuapp.com/api/player/com/{str(self.accountID)}")).json() #
         else:
             tomato_json = requests.get(f"https://tomatobackend.herokuapp.com/api/player/{self.playerServer}/{str(self.accountID)}")
-            print(type(tomato_json))
+            print(f"Status code is {tomato_json.status_code}")
+            # if status code is not 200
             counter = 0
-            print(tomato_json.status_code)
             while tomato_json.status_code != 200:
                 counter += 1
                 print(f"{counter} times pinging API, status code is {tomato_json.status_code}\n")
                 tomato_json = requests.get(f"https://tomatobackend.herokuapp.com/api/player/{self.playerServer}/{str(self.accountID)}")
+            print(f"Status code is {tomato_json.status_code}")
             self.tomatoInfo = tomato_json.json()
         
-        print("we made it here")
+        print("QB recent stats initialized")
         self.recentStats = self.tomatoInfo["recents"]
 
         # Recent stats by battles *includes battles, overall wins, wn8, and has specific tank stats

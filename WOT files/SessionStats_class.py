@@ -53,17 +53,20 @@ class SessionStatsTracker:
             self.scoreAgainstQB["Waikin"] += waikinPnt
             self.scoreAgainstQB["QuickyBaby"] += qbPnt
 
+            if (waikinPnt > qbPnt): waikinEmote, qbEmote = "waikinHype", "qbRage"
+            if (qbPnt > waikinPnt): waikinEmote, qbEmote = "waikinDab", "qbExplain"
+
             self.compareQBMsg = f"""
-            Over the last 1000 battles in the {qbTankStats['name']}, QB on AVERAGE does -> ({qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
-            {qbTankStats['kpg']} kills) || Waikin did ({damage_me} damage, {wn8_me} wn8, and {kills_me} kills) || 
-            Waikin gets {waikinPnt} point(s) waikinHype , QB gets {qbPnt} point(s)! qbPoint
+            Over the last 1000 battles -> QB played {qbTankStats['battles']} game(s) in the {qbTankStats['name']}, on AVERAGE he does -> ({qbTankStats['dpg']} damage, {qbTankStats['wn8']} wn8, 
+            {qbTankStats['kpg']} kills) || Waikin did ({damage_me} damage, {wn8_me} wn8, and got {kills_me} kills) || 
+            Waikin gets {waikinPnt} point(s) {waikinEmote} , QB gets {qbPnt} point(s)! {qbEmote}
             """ 
         except KeyError:
             self.compareQBMsg = f"""
             QB has not played this tank over the last 1000 battles.
             """ 
      
-    def overallTwitchCompareScore(self): return f"Current total score -> Waikin: {self.scoreAgainstQB['Waikin']} || \
+    def overallTwitchCompareScore(self): return f"Current score -> Waikin: {self.scoreAgainstQB['Waikin']} || \
         QB: {self.scoreAgainstQB['QuickyBaby']}"
 
 
@@ -139,6 +142,6 @@ class SessionStatsTracker:
             print(self.sessionStats)
 
 
-#test = SessionStatsTracker("na", "waikin_reppinKL")
-#test.compareToQB(33, 500, 1000, 3)
-#print(test.compareQBMsg)
+test = SessionStatsTracker("na", "waikin_reppinKL")
+test.compareToQB(33, 500, 1000, 3)
+print(test.compareQBMsg)
