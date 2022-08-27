@@ -50,7 +50,7 @@ class Player:
             # lists of all the tanks a player has nested in a dictionary
             self.allTankStats = ((requests.get("https://api.worldoftanks.com/wot/tanks/stats/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID) +\
                 "&fields=-in_garage%2C+-frags%2C+-max_frags%2C+-team%2C+-stronghold_defense%2C+-globalmap%2C+-clan%2C+-stronghold_skirmish%2C+-company%2C+-regular_team%2C+-account_id%2C+-max_xp"\
-                , timeout=3)).json())["data"][str(self.userID)] # dictionaries nested in list
+                )).json())["data"][str(self.userID)] # dictionaries nested in list
         
         else:
             self.allTankStats = ((requests.get("https://api.worldoftanks." + self.playerServer + "/wot/tanks/stats/?application_id=bd644ca5adf8dc631b1598528a4b7fc1&account_id=" + str(self.userID) +\

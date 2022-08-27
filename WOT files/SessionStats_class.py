@@ -142,6 +142,6 @@ class SessionStatsTracker:
             print(self.sessionStats)
 
 
-test = SessionStatsTracker("na", "waikin_reppinKL")
-test.compareToQB(33, 500, 1000, 3)
-print(test.compareQBMsg)
+#test = SessionStatsTracker("na", "waikin_reppinKL")
+#test.compareToQB(33, 500, 1000, 3)
+#print(test.compareQBMsg)

@@ -47,7 +47,7 @@ class waikinBot(commands.Bot):
         await ctx.send(f'Hello {ctx.author.name}!')
 
 
-    @routines.routine(seconds = 5.0)
+    @routines.routine(seconds = 10.0)
     async def routine(self, ctx: commands.Context):
 
         player_now = Player_class.Player(self.session.server, self.session.user_name)
