@@ -42,8 +42,8 @@ class waikinBot(commands.Bot):
         await self.handle_commands(message)
         
     # basic hello command
-    @commands.command(name="currentbestgame")
-    async def currentBestGame(self, ctx: commands.Context):
+    @commands.command(name="bestgame")
+    async def bestGame(self, ctx: commands.Context):
         try:
             await ctx.send(self.session.bestGameOnCurrentDate())
         except AttributeError:
